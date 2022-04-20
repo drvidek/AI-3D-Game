@@ -1,43 +1,29 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 // Use physics raycast hit from mouse click to set agent destination
 [RequireComponent(typeof(NavMeshAgent))]
-public class ClickToMoveAI : MonoBehaviour
+public class WispAI : MonoBehaviour
 {
+    GameObject self;
+    Image selectIcon;
     NavMeshAgent m_Agent;
     RaycastHit m_HitInfo = new RaycastHit();
 
-    [SerializeField] bool _isRandomPos = false;
-
     void Start()
     {
+        self = GetComponent<GameObject>();
+        selectIcon = GetComponentInChildren<Image>();
         m_Agent = GetComponent<NavMeshAgent>();
     }
 
     void Update()
     {
-        if (_isRandomPos)
-        {
-            RandomMove();
-        }
-        else
-        {
-            ClickMove();
-        }
+        RandomMove();
+        if (PlayerAI.targetObject == null)
+            selectIcon.enabled = false;
 
-        float dist = Vector3.Distance(m_Agent.transform.position, m_Agent.destination);
-        Debug.Log(dist);
-    }
-
-    void ClickMove()
-    {
-        if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftShift))
-        {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray.origin, ray.direction, out m_HitInfo))
-                m_Agent.destination = m_HitInfo.point;
-        }
     }
 
     void ChangeAreaSpeed()

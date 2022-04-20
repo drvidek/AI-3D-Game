@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3200169691513906020}
   - component: {fileID: 3200169691513906023}
   - component: {fileID: 3200169691513906022}
-  - component: {fileID: 1551301166262991888}
+  - component: {fileID: 339069734053561999}
   m_Layer: 0
   m_Name: AI Agent Prefab
   m_TagString: Untagged
@@ -120,7 +120,7 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &1551301166262991888
+--- !u!114 &339069734053561999
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,7 +129,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3200169691513906041}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9252a324cc2344c49837820ac108707f, type: 3}
+  m_Script: {fileID: 11500000, guid: a4a840ec3b3888f45aae4e356af4b031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isRandomPos: 0
