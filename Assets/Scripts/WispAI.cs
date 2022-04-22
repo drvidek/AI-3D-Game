@@ -19,9 +19,8 @@ public class WispAI : MonoBehaviour
     void Update()
     {
         RandomMove();
-        if (PlayerAI.targetObject == null)
+        if (PlayerAI.targetObject != this.gameObject)
             selectIcon.enabled = false;
-
     }
 
     void ChangeAreaSpeed()

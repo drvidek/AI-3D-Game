@@ -9,12 +9,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int scoreMax;
     [SerializeField] public int scoreCurrent;
 
+    [SerializeField]
+    public Color32[] gemColour;
+    
+
     // Start is called before the first frame update
     void Start()
     {
         GameObject[] wispCount = GameObject.FindGameObjectsWithTag("Wisp");
         scoreMax = wispCount.Length;
         UpdateScore();
+
     }
 
     public void UpdateScore()

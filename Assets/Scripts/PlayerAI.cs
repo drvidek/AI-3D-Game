@@ -29,10 +29,10 @@ public class PlayerAI : MonoBehaviour
 
     void ClickMove()
     {
-        
+
         if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftShift))
         {
-            
+
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray.origin, ray.direction, out m_HitInfo))
             {
@@ -42,6 +42,7 @@ public class PlayerAI : MonoBehaviour
                     Debug.Log("click orb");
                     following = true;
                     targetObject = m_HitInfo.rigidbody.gameObject;
+                    Debug.Log(targetObject);
                     Image image = targetObject.GetComponentInChildren<Image>();
                     image.enabled = true;
                 }
@@ -76,12 +77,25 @@ public class PlayerAI : MonoBehaviour
         Debug.Log(other);
         GameObject hitObject = other.gameObject;
         Debug.Log(hitObject);
+        if (hitObject == targetObject)
+            targetObject = null;
         switch (hitObject.tag)
         {
             case "Wisp":
                 Destroy(hitObject);
                 gameManager.scoreCurrent++;
                 gameManager.UpdateScore();
+                break;
+            case "Gem":
+                GemController hitGem = hitObject.GetComponent<GemController>();
+                int unlockIndex = hitGem.gemIndex;
+                Destroy(hitObject);
+                GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+                for (int i = 0; i < doors.Length; i++)
+                {
+                    DoorController door = doors[i].GetComponent<DoorController>();
+                    door.UnlockCheck(unlockIndex);
+                }
                 break;
             default:
                 break;
