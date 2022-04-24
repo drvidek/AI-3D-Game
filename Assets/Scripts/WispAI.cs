@@ -9,11 +9,13 @@ public class WispAI : MonoBehaviour
     GameManager gameManager;
     Image selectIcon;
     NavMeshAgent m_Agent;
+    Vector3 homePos;
 
     void Start()
     {
         selectIcon = GetComponentInChildren<Image>();
         m_Agent = GetComponent<NavMeshAgent>();
+        homePos = transform.position;
     }
 
     void Update()
@@ -41,10 +43,19 @@ public class WispAI : MonoBehaviour
     void RandomMove()
     {
         float dist = Vector3.Distance(m_Agent.transform.position, m_Agent.destination);
-        if (dist <= 1f)
+        if (dist <= 0.5f)
         {
             Vector3 randomOffset = new Vector3(Random.Range(-3f, 3f), 0f, Random.Range(-3f, 3f));
             Vector3 currentPos = m_Agent.transform.position;
+            float distFromHome = Vector3.Distance(homePos, randomOffset + currentPos);
+
+            while (distFromHome > 10)
+            {
+                randomOffset = new Vector3(Random.Range(-3f, 3f), 0f, Random.Range(-3f, 3f));
+                currentPos = m_Agent.transform.position;
+                distFromHome = Vector3.Distance(homePos, randomOffset + currentPos);
+            }
+
             m_Agent.SetDestination(randomOffset + currentPos);
         }
     }

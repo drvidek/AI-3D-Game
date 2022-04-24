@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerAI : MonoBehaviour
 {
@@ -96,6 +97,9 @@ public class PlayerAI : MonoBehaviour
                     DoorController door = doors[i].GetComponent<DoorController>();
                     door.UnlockCheck(unlockIndex);
                 }
+                break;
+            case "Enemy":
+                Debug.Log("Enemy hit");
                 break;
             default:
                 break;

@@ -203,7 +203,7 @@ GameObject:
   - component: {fileID: 2691781717460726837}
   m_Layer: 0
   m_Name: Player Controlled AI
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -322,6 +322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a840ec3b3888f45aae4e356af4b031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
 --- !u!54 &2691781717460726837
 Rigidbody:
   m_ObjectHideFlags: 0
