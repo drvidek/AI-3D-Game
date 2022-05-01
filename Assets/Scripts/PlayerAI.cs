@@ -12,14 +12,27 @@ public class PlayerAI : MonoBehaviour
     public static GameObject targetObject;
     bool following;
     RaycastHit m_HitInfo = new RaycastHit();
+    bool linking = false;
+    public float walkSpeed, jumpSpeed;
+    Transform modelTransform;
+    public Vector3 homePos;
+    public bool active;
 
     void Start()
     {
         m_Agent = GetComponent<NavMeshAgent>();
+        modelTransform = GetComponentInChildren<Renderer>().transform;
+        homePos = transform.position;
+    }
+
+    public void PlayerActive(bool b)
+    {
+        active = b;
     }
 
     void Update()
     {
+        if (active)
         ClickMove();
         if (following)
         {
@@ -28,28 +41,44 @@ public class PlayerAI : MonoBehaviour
 
     }
 
+    private void FixedUpdate()
+    {
+        if (m_Agent.isOnOffMeshLink && linking == false)
+        {
+            linking = true;
+            m_Agent.speed = jumpSpeed;
+        }
+        else if (m_Agent.isOnNavMesh && linking == true)
+        {
+            linking = false;
+            m_Agent.velocity = Vector3.zero;
+            m_Agent.speed = walkSpeed;
+        }
+    }
+
+    public void Restart()
+    {
+        m_Agent.Warp(homePos);
+        m_Agent.destination = homePos;
+    }
+
     void ClickMove()
     {
-
         if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftShift))
         {
 
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray.origin, ray.direction, out m_HitInfo))
             {
-                Debug.Log("ray cast");
                 if (m_HitInfo.rigidbody != null)
                 {
-                    Debug.Log("click orb");
                     following = true;
                     targetObject = m_HitInfo.rigidbody.gameObject;
-                    Debug.Log(targetObject);
                     Image image = targetObject.GetComponentInChildren<Image>();
                     image.enabled = true;
                 }
                 else
                 {
-                    Debug.Log("click floor");
                     following = false;
                     targetObject = null;
                     m_Agent.destination = m_HitInfo.point;
@@ -75,36 +104,37 @@ public class PlayerAI : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other);
-        GameObject hitObject = other.gameObject;
-        Debug.Log(hitObject);
-        if (hitObject == targetObject)
-            targetObject = null;
-        switch (hitObject.tag)
+        if (active)
         {
-            case "Wisp":
-                Destroy(hitObject);
-                gameManager.scoreCurrent++;
-                gameManager.UpdateScore();
-                break;
-            case "Gem":
-                GemController hitGem = hitObject.GetComponent<GemController>();
-                int unlockIndex = hitGem.gemIndex;
-                Destroy(hitObject);
-                GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
-                for (int i = 0; i < doors.Length; i++)
-                {
-                    DoorController door = doors[i].GetComponent<DoorController>();
-                    door.UnlockCheck(unlockIndex);
-                }
-                break;
-            case "Enemy":
-                Debug.Log("Enemy hit");
-                break;
-            default:
-                break;
+            GameObject hitObject = other.gameObject;
+            if (hitObject == targetObject)
+                targetObject = null;
+            switch (hitObject.tag)
+            {
+                case "Wisp":
+                    hitObject.SetActive(false);
+                    gameManager.scoreCurrent++;
+                    gameManager.UpdateScore();
+                    break;
+                case "Gem":
+                    GemController hitGem = hitObject.GetComponent<GemController>();
+                    int unlockIndex = hitGem.gemIndex;
+                    hitObject.SetActive(false);
+                    GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+                    for (int i = 0; i < doors.Length; i++)
+                    {
+                        DoorController door = doors[i].GetComponent<DoorController>();
+                        door.UnlockCheck(unlockIndex);
+                    }
+                    break;
+                case "Enemy":
+                    Debug.Log("Enemy hit");
+                    gameManager.Restart();
+                    break;
+                default:
+                    break;
+            }
         }
     }
-
 
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class DoorController : MonoBehaviour
 {
@@ -12,7 +13,6 @@ public class DoorController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(myRenderer);
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         GetColour();
     }
@@ -24,12 +24,16 @@ public class DoorController : MonoBehaviour
         myRenderer.material.color = myColour;
     }
 
+    public void Restart()
+    {
+        this.gameObject.SetActive(true);
+    }
+    
     public void UnlockCheck(int key)
     {
         if (key == gemIndex)
         {
-            Debug.Log("Unlock");
-            Destroy(this.gameObject);
+            this.gameObject.SetActive(false);
         }
     }
 }

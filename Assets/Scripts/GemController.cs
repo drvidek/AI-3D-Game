@@ -17,7 +17,6 @@ public class GemController : MonoBehaviour
     {
         selectIcon = GetComponentInChildren<Image>();
         myRenderer = GetComponentInChildren<Renderer>();
-        Debug.Log(myRenderer);
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         GetColour();
     }
@@ -28,6 +27,11 @@ public class GemController : MonoBehaviour
         gemColour.a = 200;
         myRenderer.material.color = gemColour;
         myLight.color = gemColour;
+    }
+
+    public void Restart()
+    {
+        this.gameObject.SetActive(true);
     }
 
     // Update is called once per frame

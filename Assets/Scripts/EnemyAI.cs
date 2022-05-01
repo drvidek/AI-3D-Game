@@ -23,6 +23,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float chaseDist;
     RaycastHit rayToPlayer = new RaycastHit();
     Animator anim;
+    public Transform modelTransform;
     public GameObject waypointCluster;
     public Transform[] waypointList;
     public int waypointIndex;
@@ -36,6 +37,8 @@ public class EnemyAI : MonoBehaviour
     {
         m_Agent = GetComponent<NavMeshAgent>();
         anim = GetComponentInChildren<Animator>();
+        Transform[] transArray = GetComponentsInChildren<Transform>();
+        modelTransform = transArray[1];
         player = GameObject.Find("Player").transform;
         homePos = transform.position;
         state = States.idle;
@@ -47,6 +50,17 @@ public class EnemyAI : MonoBehaviour
     {
         if (PlayerVisible())
             state = States.chase;
+    }
+
+    public void Restart()
+    {
+        m_Agent.Warp(homePos);
+        m_Agent.destination = homePos;
+        state = States.idle;
+        anim.SetBool("Chase", false);
+        waypointIndex = 0;
+        randomChecks = 0;
+        NextState();
     }
 
     void NextState()
@@ -81,6 +95,7 @@ public class EnemyAI : MonoBehaviour
         while (state == States.idle)
         {
             MoveToWaypoint();
+            modelTransform.Rotate(new Vector3(transform.rotation.x, transform.rotation.y + (360 * Time.deltaTime), transform.rotation.z));
             yield return null;
         }
         NextState();
@@ -94,6 +109,7 @@ public class EnemyAI : MonoBehaviour
         anim.SetBool("Chase", true);
         while (state == States.chase)
         {
+            modelTransform.rotation = transform.rotation;
             m_Agent.SetDestination(player.position);
 
             float dist = Vector3.Distance(m_Agent.transform.position, m_Agent.destination);
