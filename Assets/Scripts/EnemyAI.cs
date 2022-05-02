@@ -29,9 +29,11 @@ public class EnemyAI : MonoBehaviour
     public int waypointIndex;
     public int randomChecks;
     public int randomMax;
-    public float chaseSpd = 5, idleSpd = 2, randomSpd = 3;
-    public float chaseAccel = 2, idleAccel = 5, randomAccel = 1;
-    public float chaseTurn = 500, idleTurn = 1000, randomTurn = 1000;
+    public float normSpd;
+    public float normAccel;
+    public float chaseSpd = 5f, idleSpd = 2f, randomSpd = 3f, slowSpd = 1.5f;
+    public float chaseAccel = 2f, idleAccel = 5f, randomAccel = 1f, slowAccel = 10f;
+    public float chaseTurn = 500f, idleTurn = 1000f, randomTurn = 1000f;
 
     void Start()
     {
@@ -89,13 +91,13 @@ public class EnemyAI : MonoBehaviour
 
     private IEnumerator Idle()
     {
-        m_Agent.speed = idleSpd;
+        normSpd = idleSpd;
         m_Agent.angularSpeed = idleTurn;
-        m_Agent.acceleration = idleAccel;
+        normAccel = idleAccel;
         while (state == States.idle)
         {
+            ChangeAreaSpeed();
             MoveToWaypoint();
-            modelTransform.Rotate(new Vector3(transform.rotation.x, transform.rotation.y + (360 * Time.deltaTime), transform.rotation.z));
             yield return null;
         }
         NextState();
@@ -103,13 +105,13 @@ public class EnemyAI : MonoBehaviour
 
     private IEnumerator Chase()
     {
-        m_Agent.speed = chaseSpd;
+        normSpd = chaseSpd;
         m_Agent.angularSpeed = chaseTurn;
-        m_Agent.acceleration = chaseAccel;
+        normAccel = chaseAccel;
         anim.SetBool("Chase", true);
         while (state == States.chase)
         {
-            modelTransform.rotation = transform.rotation;
+            ChangeAreaSpeed();
             m_Agent.SetDestination(player.position);
 
             float dist = Vector3.Distance(m_Agent.transform.position, m_Agent.destination);
@@ -123,10 +125,11 @@ public class EnemyAI : MonoBehaviour
 
     private IEnumerator Investigate()
     {
-        m_Agent.speed = chaseSpd;
+        normSpd = chaseSpd;
         m_Agent.angularSpeed = idleTurn;
         while (state == States.investigate)
         {
+            ChangeAreaSpeed();
             float dist = Vector3.Distance(m_Agent.transform.position, m_Agent.destination);
             if (dist <= 1f)
                 state = States.hunt;
@@ -137,11 +140,12 @@ public class EnemyAI : MonoBehaviour
 
     private IEnumerator Hunt()
     {
-        m_Agent.speed = randomSpd;
+        normSpd = randomSpd;
         m_Agent.angularSpeed = randomTurn;
-        m_Agent.acceleration = idleAccel;
+        normAccel = idleAccel;
         while (state == States.hunt)
         {
+            ChangeAreaSpeed();
             RandomMove();
             if (randomChecks >= randomMax)
             {
@@ -155,13 +159,14 @@ public class EnemyAI : MonoBehaviour
 
     private IEnumerator GoHome()
     {
-        m_Agent.speed = idleSpd;
+        normSpd = idleSpd;
         m_Agent.angularSpeed = idleTurn;
-        m_Agent.acceleration = idleAccel;
+        normAccel = idleAccel;
         anim.SetBool("Chase", false);
         m_Agent.SetDestination(homePos);
         while (state == States.goHome)
         {
+            ChangeAreaSpeed();
             float dist = Vector3.Distance(m_Agent.transform.position, m_Agent.destination);
             if (dist <= 1f)
                 state = States.idle;
@@ -186,14 +191,16 @@ public class EnemyAI : MonoBehaviour
     {
         NavMeshHit navHit;
         m_Agent.SamplePathPosition(-1, 0.0f, out navHit);
-        int GrassMask = 1 << NavMesh.GetAreaFromName("Tall Grass");
+        int GrassMask = 1 << NavMesh.GetAreaFromName("Slow");
         if (navHit.mask == GrassMask)
         {
-            m_Agent.speed = 3f;
+            m_Agent.speed = slowSpd;
+            m_Agent.acceleration = slowAccel;
         }
         else
         {
-            m_Agent.speed = 30f;
+            m_Agent.speed = normSpd;
+            m_Agent.acceleration = normAccel;
         }
     }
 

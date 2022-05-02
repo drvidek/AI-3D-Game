@@ -72,6 +72,7 @@ MonoBehaviour:
   state: 0
   player: {fileID: 0}
   chaseDist: 5
+  modelTransform: {fileID: 0}
   waypointCluster: {fileID: 0}
   waypointList: []
   waypointIndex: 0
@@ -80,6 +81,7 @@ MonoBehaviour:
   chaseSpd: 5
   idleSpd: 2
   randomSpd: 3
+  slowSpd: 0.5
   chaseAccel: 2
   idleAccel: 5
   randomAccel: 1

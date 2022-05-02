@@ -27,7 +27,7 @@ public class WispAI : MonoBehaviour
 
     void Update()
     {
-        myLight.enabled = CheckVisible();
+        //myLight.enabled = CheckVisible();
         RandomMove();
         if (PlayerAI.targetObject != this.gameObject)
             selectIcon.enabled = false;
@@ -36,6 +36,7 @@ public class WispAI : MonoBehaviour
     public void Restart()
     {
         this.gameObject.SetActive(true);
+        selectIcon.enabled = false;
         transform.position = homePos;
     }
 
@@ -48,21 +49,6 @@ public class WispAI : MonoBehaviour
         else
         {
             return false;
-        }
-    }
-
-    void ChangeAreaSpeed()
-    {
-        NavMeshHit navHit;
-        m_Agent.SamplePathPosition(-1, 0.0f, out navHit);
-        int GrassMask = 1 << NavMesh.GetAreaFromName("Tall Grass");
-        if (navHit.mask == GrassMask)
-        {
-            m_Agent.speed = 3f;
-        }
-        else
-        {
-            m_Agent.speed = 30f;
         }
     }
 

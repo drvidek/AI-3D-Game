@@ -34,7 +34,7 @@ public class PlayerAI : MonoBehaviour
     {
         if (active)
         ClickMove();
-        if (following)
+        if (following && targetObject != null)
         {
             m_Agent.destination = targetObject.transform.position;
         }
@@ -60,6 +60,8 @@ public class PlayerAI : MonoBehaviour
     {
         m_Agent.Warp(homePos);
         m_Agent.destination = homePos;
+        following = false;
+        targetObject = null;
     }
 
     void ClickMove()
@@ -84,21 +86,6 @@ public class PlayerAI : MonoBehaviour
                     m_Agent.destination = m_HitInfo.point;
                 }
             }
-        }
-    }
-
-    void ChangeAreaSpeed()
-    {
-        NavMeshHit navHit;
-        m_Agent.SamplePathPosition(-1, 0.0f, out navHit);
-        int GrassMask = 1 << NavMesh.GetAreaFromName("Tall Grass");
-        if (navHit.mask == GrassMask)
-        {
-            m_Agent.speed = 3f;
-        }
-        else
-        {
-            m_Agent.speed = 30f;
         }
     }
 
@@ -129,7 +116,7 @@ public class PlayerAI : MonoBehaviour
                     break;
                 case "Enemy":
                     Debug.Log("Enemy hit");
-                    gameManager.Restart();
+                    gameManager.GameEnd(false);
                     break;
                 default:
                     break;

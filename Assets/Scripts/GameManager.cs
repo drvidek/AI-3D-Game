@@ -24,6 +24,10 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public Color32[] gemColour;
 
+    [SerializeField]
+    GameObject winPanel;
+    [SerializeField]
+    GameObject losePanel;
 
     // Start is called before the first frame update
     void Start()
@@ -35,12 +39,20 @@ public class GameManager : MonoBehaviour
         enemies = GameObject.FindGameObjectsWithTag("Enemy");
         scoreMax = wisps.Length;
         UpdateScore();
-
     }
 
     public void UpdateScore()
     {
         scoreText.text = scoreCurrent.ToString() + " / " + scoreMax.ToString() + "\nWisps";
+        if (scoreCurrent == scoreMax)
+            GameEnd(true);
+    }
+
+    public void GameEnd(bool win)
+    {
+        winPanel.SetActive(win);
+        losePanel.SetActive(!win);
+        player.PlayerActive(false);
     }
 
     public void Restart()

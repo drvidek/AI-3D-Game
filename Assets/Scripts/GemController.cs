@@ -32,6 +32,7 @@ public class GemController : MonoBehaviour
     public void Restart()
     {
         this.gameObject.SetActive(true);
+        selectIcon.enabled = false;
     }
 
     // Update is called once per frame
