@@ -17,11 +17,13 @@ public class PlayerAI : MonoBehaviour
     Transform modelTransform;
     public Vector3 homePos;
     public bool active;
+    [SerializeField] private Animator myAnim;
 
     void Start()
     {
         m_Agent = GetComponent<NavMeshAgent>();
         modelTransform = GetComponentInChildren<Renderer>().transform;
+        myAnim = GetComponentInChildren<Animator>();
         homePos = transform.position;
     }
 
@@ -39,6 +41,10 @@ public class PlayerAI : MonoBehaviour
             m_Agent.destination = targetObject.transform.position;
         }
 
+        if (m_Agent.remainingDistance > 0.5f)
+            myAnim.SetBool("Moving", true);
+        else
+            myAnim.SetBool("Moving", false);
     }
 
     private void FixedUpdate()
@@ -47,6 +53,7 @@ public class PlayerAI : MonoBehaviour
         {
             linking = true;
             m_Agent.speed = jumpSpeed;
+            myAnim.SetTrigger("Jump");
         }
         else if (m_Agent.isOnNavMesh && linking == true)
         {
@@ -72,6 +79,8 @@ public class PlayerAI : MonoBehaviour
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray.origin, ray.direction, out m_HitInfo))
             {
+                
+
                 if (m_HitInfo.rigidbody != null)
                 {
                     following = true;
