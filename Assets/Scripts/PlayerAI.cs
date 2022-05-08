@@ -75,13 +75,10 @@ public class PlayerAI : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftShift))
         {
-
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray.origin, ray.direction, out m_HitInfo))
             {
-                
-
-                if (m_HitInfo.rigidbody != null)
+                if (m_HitInfo.rigidbody != null && (m_HitInfo.rigidbody.tag == "Wisp" || m_HitInfo.rigidbody.tag == "Gem"))
                 {
                     following = true;
                     targetObject = m_HitInfo.rigidbody.gameObject;
