@@ -5,24 +5,27 @@ using UnityEngine.UI;
 
 public class GemController : MonoBehaviour
 {
-    private Color32 gemColour;
-    public int gemIndex;
-    private Renderer myRenderer;
-    GameManager gameManager;
-    public Light myLight;
-    Image selectIcon;
+    private Color32 gemColour;  //my colour
+    public int gemIndex;    //my index
+    private Renderer myRenderer;    //my mesh
+    GameManager gameManager;    //the game manager
+    public Light myLight;   //my light
+    Image targetIcon;   //my icon for when I am targeted
 
     // Start is called before the first frame update
     void Start()
     {
-        selectIcon = GetComponentInChildren<Image>();
+        //fetch components
+        targetIcon = GetComponentInChildren<Image>();
         myRenderer = GetComponentInChildren<Renderer>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        //set my colour
         GetColour();
     }
 
     public void GetColour()
     {
+        //set my colour based on my gem index
         gemColour = gameManager.gemColour[gemIndex];
         gemColour.a = 200;
         myRenderer.material.color = gemColour;
@@ -31,14 +34,18 @@ public class GemController : MonoBehaviour
 
     public void Restart()
     {
+        //activate myself by default
         this.gameObject.SetActive(true);
-        selectIcon.enabled = false;
+        //deactivate my target icon by default
+        targetIcon.enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        //if the player is not targeting me
         if (PlayerAI.targetObject != this.gameObject)
-            selectIcon.enabled = false;
+            //disable my target icon
+            targetIcon.enabled = false;
     }
 }
